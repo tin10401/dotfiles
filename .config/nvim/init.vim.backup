@@ -1,0 +1,212 @@
+" ===================================================================
+" Neovim Configuration File
+" ===================================================================
+
+let g:coc_disable_startup_warning = 1
+" Enable virtual text for diagnostics
+let g:coc_enable_virtual_text = 1
+
+" Customize the virtual text display
+let g:coc_virtual_text_prefix = '>> ' " Optional: Prefix for virtual text
+
+" Disable underlining of errors/warnings
+let g:coc_diagnostic_underline = 0
+
+
+" ------------------------------
+" Plugin Manager: vim-plug
+" ------------------------------
+call plug#begin('~/.local/share/nvim/plugged')
+
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'windwp/nvim-autopairs'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'dense-analysis/ale'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'sheerun/vim-polyglot'
+Plug 'tpope/vim-fugitive'
+
+call plug#end()
+" Show diagnostics in a floating window when hovering
+nnoremap <silent> K :call CocAction('doHover')<CR>
+
+" Navigate through errors and warnings
+nmap <silent> [d <Plug>(coc-diagnostic-prev)
+nmap <silent> ]d <Plug>(coc-diagnostic-next)
+
+" Code actions (e.g., quick fixes)
+nnoremap <leader>ca <Plug>(coc-codeaction)
+
+" Automatically trigger completion and linting while typing
+set updatetime=300
+
+
+" ------------------------------
+" Plugin Configuration
+" ------------------------------
+
+" ------------------------------
+" nvim-autopairs Configuration
+" ------------------------------
+lua << EOF
+require('nvim-autopairs').setup{}
+EOF
+
+" ------------------------------
+" coc.nvim Configuration
+" ------------------------------
+" Use <Tab> and <S-Tab> for navigation in completion menu
+inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" Trigger completion with <C-space>
+inoremap <silent><expr> <C-space> coc#refresh()
+
+" Use K to show documentation in a floating window
+nnoremap <silent> K :call CocAction('doHover')<CR>
+
+" Go to definition, type definition, implementation, references
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nnoremap <leader>ca <Plug>(coc-codeaction)
+
+" Disable coc.nvim diagnostics globally
+let g:coc_diagnostic_enable = 1
+
+" ------------------------------
+" ALE Configuration
+" ------------------------------
+" Define ALE signs with appropriate symbols and colors
+sign define ALEErrorSign text=✗ texthl=ALEErrorSign
+sign define ALEWarningSign text=⚠ texthl=ALEWarningSign
+
+" Customize the highlight colors for ALE signs
+highlight ALEErrorSign guifg=#FF0000   " Red color for errors
+highlight ALEWarningSign guifg=#FFA500 " Orange color for warnings
+
+" Enable the sign column to always show signs
+let g:ale_sign_column_always = 0
+set signcolumn=no
+
+" Enable real-time linting on text change and file save
+let g:ale_lint_on_text_changed = 'always'
+let g:ale_lint_on_save = 1
+
+" Define ALE linters
+let g:ale_linters = {
+      \ 'python': ['flake8', 'pylint'],
+      \ 'javascript': ['eslint'],
+      \ 'cpp': ['clangd'],  
+      \ }
+
+" Only use explicitly enabled linters
+let g:ale_linters_explicit = 1
+
+" Specify clangd executable (if not in PATH, adjust the path)
+" let g:ale_cpp_clangd_executable = '/usr/bin/clangd-14'
+
+" Configure additional clangd arguments
+let g:ale_cpp_clangd_options = '--background-index --compile-commands-dir=./ -I/usr/include/c++/14 -I/usr/include/x86_64-linux-gnu/c++/14'
+
+" ------------------------------
+" General Key Mappings and Settings
+" ------------------------------
+" Center only in C++ files
+autocmd FileType cpp nnoremap <silent> j jzz
+autocmd FileType cpp nnoremap <silent> k kzz
+
+" General Key Mappings
+nnoremap <C-u> <C-u>zz
+nnoremap <C-d> <C-d>zz
+nnoremap <silent> j jzz
+nnoremap <silent> k kzz
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <F3> ggyG
+nnoremap <F4> :wa<Bar>:!make new<CR>
+nnoremap <F5> :wa<Bar>:!make run<CR>
+nnoremap <F6> :wa<Bar>:!make run2<CR>
+set mouse=
+nnoremap <Up> <nop>
+nnoremap <Down> <nop>
+nnoremap <Left> <nop>
+nnoremap <Right> <nop>
+inoremap <Up> <nop>
+inoremap <Down> <nop>
+inoremap <Left> <nop>
+inoremap <Right> <nop>
+vnoremap <Up> <nop>
+vnoremap <Down> <nop>
+vnoremap <Left> <nop>
+vnoremap <Right> <nop>
+
+" ------------------------------
+" Basic Settings
+" ------------------------------
+set number
+set relativenumber
+syntax on
+filetype plugin indent on
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set smartindent
+set clipboard=unnamedplus
+set termguicolors
+let mapleader = " "
+
+" File Navigation Keybindings
+nnoremap <C-p> :Files<CR>
+nnoremap <C-b> :Buffers<CR>
+nnoremap <C-f> :Rg<CR>
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <Esc>:w<CR>a
+nnoremap <C-q> :q<CR>
+inoremap <C-q> <Esc>:q<CR>
+
+set completeopt=menuone,noinsert,noselect
+
+" ------------------------------
+" Airline Configuration
+" ------------------------------
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='dark'
+
+" ------------------------------
+" FZF Configuration
+" ------------------------------
+let g:fzf_layout = { 'down': '~40%' }
+let g:fzf_command_prefix = 'Fzf'
+
+" Tab Navigation in FZF
+inoremap <silent><expr> <Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
+inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" ------------------------------
+" Git Fugitive Configuration
+" ------------------------------
+" Open Git status with :G
+nnoremap <leader>gs :G<CR>
+
+" ------------------------------
+" Additional Settings
+" ------------------------------
+" Highlight search results
+set hlsearch
+set incsearch
+
+" Enable line wrapping
+set wrap
+
+" Enable persistent undo
+set undofile
+set undodir=~/.local/share/nvim/undo
+
+" ------------------------------
+" End of Configuration
+" ------------------------------
+
