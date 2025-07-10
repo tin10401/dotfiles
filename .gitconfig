@@ -1,0 +1,9 @@
+[user]
+	name = Tin Le
+	email = sololtin2001@gmail.com
+[credential]
+	helper = 
+[color]
+	ui = auto
+[core]
+	editor = 'notepad++.exe' -multiInst -notabbar -nosession -noPlugin
